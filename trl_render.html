@@ -1,0 +1,202 @@
+<html>
+<head>
+    <style>
+
+    
+    </style>
+
+
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+</head>
+<body>
+    <H1>The Problems</H1>
+    <script>
+        //File path for dendograph input
+        var dendographpath = "test2.csv";
+        //File path for parallel input
+        var parallelpath = "continuous.csv";
+
+        var svg_width = 2000;
+        var svg_height = 1000;
+
+        var d_width = 800;  //Width of the Dendogram
+        var d_height = 1000; // Height of the Dendogram
+
+        var p_width = 400;  //Width of the parallel plot
+        var p_height = 1000; //Width of the parallel plot
+
+        var margin = 10;
+
+        var  root, svg, intdata2,testyaxis, x,testyaxis,intdata,y,blah, temp, xfunc,
+         fxwrap
+        
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        //Create the Dendograph
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+        var mydata = d3.csv(dendographpath)
+        .then(function(data){ //Function to Plot the Dendograph
+           intdata = data;
+
+           root = d3.stratify().id(function(d){return d.Name})
+                        .parentId(function(d){return d.Parent})
+                        (intdata);
+
+            var treeLayout = d3.cluster()
+                        .size([d_height,d_width]);
+
+            treeLayout(root);
+
+            svg=d3.select("body").append("svg")
+                .style("width", svg_width)
+                .style("height", svg_height)
+                .style("font", "10px sans-serif")
+                .style("margin", "5px");
+                            
+            var node = svg.append("g")
+                    .attr("stroke-linejoin","round")
+                    .attr("stroke-width",3)
+                    .selectAll("g")
+                    .data(root.descendants())
+                    .join("g")
+                    .attr("transform", d => `translate(${d.y},${d.x})`);
+                    
+            node.append("circle")
+                .attr("fill",d => d.children ? "#555" : "#999")
+                .attr("r",2.5);
+
+            var link = svg.append("g")
+                    .attr("fill","none")
+                    .attr("stroke","#555")
+                    .attr("stroke-opacity",0.4)
+                    .attr("stroke-width",1.5)
+                    .selectAll("path")
+                    .data(root.links())
+                    .join("path")
+                    .attr("d", d => `
+                        M${d.target.y},${d.target.x}
+                        C${d.source.y},${d.target.x}
+                        ${d.source.y},${d.source.x}
+                        ${d.source.y},${d.source.x}
+                    `);
+
+            node.append("text")
+                .attr("dy", "0.31em")
+                .attr("x", d => d.children ? -6 : 6)
+                .text(d => d.data.Name)
+                .filter(d => d.children)
+                .attr("text-anchor", "end")
+                .clone(true).lower()
+                .attr("stroke", "white");
+       })
+        .then(d3.csv(parallelpath,({Test,UID,Cost,TestDate}) => //Function read in data for parallelogram
+            ({Test:Test,UID:UID,Cost:+Cost,TestDate: new Date(TestDate)}))
+            .then(function(data){  //Function to do something with parallelogram data
+            intdata2 = data;
+            var den_data = root.descendants();
+            //Keys for the parallel plot keys
+            var keys = intdata2.columns;
+            //Set up the x-axs locations for the different
+            //parallel plots
+            
+            //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            //Set up the simple functions needed without wrappers
+            //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+            //Gives the x and y locations of the end of the dendography.  Note that the x and y values
+            //have been transposed.
+            var nodex = new Map(Array.from(den_data, junk => [junk.data.UID,junk.y]));
+            var nodey = new Map(Array.from(den_data, junk => [junk.data.UID,junk.x]));
+
+            //Turn nodex and nodey into functions so they can be integrated into a map with the 
+            //parallel plot  x locations
+
+            xfunc = function fnodex(x){
+                return nodex.get(x);
+            }
+
+            //Sets the x location of Test, Cost, and TestDate
+            xp = d3.scalePoint()
+                    .domain(keys.slice(1))
+                    .range([d_width + 200 , (d_width+200) +p_width - margin]);           
+            
+            //Create the Map of x that will require a key and value
+            x = new Map();
+            x.set("UID",xfunc)
+            x.set("Test",xp);
+            x.set("Cost",xp);
+            x.set("TestDate",xp);
+            //Next 
+            fxwrap = function xwrap(key,value){
+                if(key == "UID"){
+                    return xfunc(value);
+                } else {
+                    return xp(key);
+                }
+            }          
+
+            function fnodey(x){
+                return nodey.get(x);
+            }
+
+            var costyaxis = d3.scaleLinear()
+                            .domain(d3.extent(intdata2, d => d.Cost))
+                            .range([margin,svg_height - margin]);
+
+            var dateyaxis = d3.scaleTime()
+                            .domain(d3.extent(intdata2, d => d['TestDate']))
+                            .range([margin,svg_height - margin]);
+
+            var testkeys = Array.from(intdata2,d => d.Test);
+
+            testyaxis = d3.scalePoint()
+                            .domain(testkeys)
+                            .range([margin,svg_height - margin]);
+
+            //Create a map that picks the right Scale
+            y = new Map();
+
+            y.set("UID",fnodey)
+            y.set("Test",testyaxis);
+            y.set("Cost",costyaxis);
+            y.set("TestDate",dateyaxis);
+            
+            svg.append("g")
+                .attr("fill","none")
+                .attr("stroke-width",1.5)
+                .attr("stroke-opacity",0.1)
+                
+                .selectAll("path")
+                .data(intdata2)
+                .join("path")
+                    .attr("stroke","blue")
+                    .on("mouseover", function(d) {
+                        d3.select(this).attr("stroke-opacity", 1).attr("stroke","red")
+                    })
+                    .on("mouseout",function(d){
+                        d3.select(this).attr("stroke-opacity",0.1).attr("stroke","blue")
+                    })
+                    .attr("d",d => d3.line()
+                        .x(([key,value]) => fxwrap(key,value))
+                        .y(([key,value]) => y.get(key)(value))
+                    (d3.cross(keys, [d], (key, d) => [key, d[key]])));
+
+            //Plot Axis
+
+            svg.append("g")
+                .selectAll("g")
+                .data(keys.slice(1))
+                .join("g")
+                    .attr("transform", d => `translate(${xp(d)},0)`)
+                    .each(function(d) {d3.select(this).call(d3.axisRight(y.get(d))); })
+                    .call(g => g.append("text")
+                    .attr("x", margin)
+                    .attr("y", -6)
+                    .attr("text-anchor", "start")
+                    .attr("fill", "currentColor")
+                    .text(d => d))
+        }))
+            
+    </script>
+</body>
+</html>
