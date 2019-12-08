@@ -1,7 +1,7 @@
 <html>
 <head>
     <style>
-
+        text {color:black}
     
     </style>
 
@@ -9,7 +9,7 @@
     <script src="https://d3js.org/d3.v5.min.js"></script>
 </head>
 <body>
-    <H1>The Problems</H1>
+    <H1>Technology Development Plan</H1>
     <script>
         //File path for dendograph input
         var dendographpath = "test2.csv";
@@ -20,14 +20,14 @@
         var svg_height = 1000;
 
         var d_width = 800;  //Width of the Dendogram
-        var d_height = 1000; // Height of the Dendogram
+        var d_height = 750; // Height of the Dendogram
 
         var p_width = 400;  //Width of the parallel plot
-        var p_height = 1000; //Width of the parallel plot
+        var p_height = 750; //Width of the parallel plot
 
         var margin = 10;
 
-        var  root, svg, intdata2,testyaxis, x,testyaxis,intdata,y,blah, temp, xfunc,
+        var  root, svg, intdata2,testyaxis, x,testyaxis,y,blah, temp, xfunc,
          fxwrap
         
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -36,7 +36,7 @@
 
         var mydata = d3.csv(dendographpath)
         .then(function(data){ //Function to Plot the Dendograph
-           intdata = data;
+           var intdata = data;
 
            root = d3.stratify().id(function(d){return d.Name})
                         .parentId(function(d){return d.Parent})
@@ -141,17 +141,17 @@
 
             var costyaxis = d3.scaleLinear()
                             .domain(d3.extent(intdata2, d => d.Cost))
-                            .range([margin,svg_height - margin]);
+                            .range([margin,p_height - margin]);
 
             var dateyaxis = d3.scaleTime()
                             .domain(d3.extent(intdata2, d => d['TestDate']))
-                            .range([margin,svg_height - margin]);
+                            .range([margin,p_height - margin]);
 
             var testkeys = Array.from(intdata2,d => d.Test);
 
             testyaxis = d3.scalePoint()
                             .domain(testkeys)
-                            .range([margin,svg_height - margin]);
+                            .range([margin,p_height - margin]);
 
             //Create a map that picks the right Scale
             y = new Map();
