@@ -1,0 +1,126 @@
+{"Nodes":
+    [
+    {"Name":"TRL6",
+    "Parent":"None",
+    "UID":1
+    },
+    {"Name":"Design",
+    "Parent":"TRL6",
+    "UID":2
+    },
+    {"Name":"Manufacturing",
+    "Parent":"TRL6",
+    "UID":3
+    },
+    {"Name":"Layup",
+    "Parent":"Manufacturing",
+    "UID":4
+    },
+    {"Name":"Consolidation",
+    "Parent":"Manufacturing",
+    "UID":5
+    },
+    {"Name":"Cure",
+    "Parent":"Manufacturing",
+    "UID":6
+    },
+    {"Name":"Machining",
+    "Parent":"Manufacturing",
+    "UID":7
+    },
+    {"Name":"Inspection",
+    "Parent":"Manufacturing",
+    "UID":8
+    },
+    {"Name":"Bonding",
+    "Parent":"Manufacturing",
+    "UID":9
+    },
+    {"Name":"Surface Prep",
+    "Parent":"Bonding",
+    "UID":10,
+    "Tests":["Bond Pull Tests"]
+    },
+    {"Name":"Delamination",
+    "Parent":"Inspection",
+    "UID":11},
+    {"Name":"Dimensional",
+    "Parent":"Inspection",
+    "UID":12
+    },
+    {"Name":"Bagging",
+    "Parent":"Bonding",
+    "UID":13
+    },
+    {"Name":"Material Properties",
+    "Parent":"Design",
+    "UID":14
+    },
+    {"Name":"Layup Specification",
+    "Parent":"Design",
+    "UID":15
+    },
+    {"Name":"Specimen",
+    "Parent":"Material Properties",
+    "UID":16
+    },
+    {"Name":"Component",
+    "Parent":"Material Properties",
+    "UID":17
+    },
+    {"Name":"Modulus",
+    "Parent":"Specimen",
+    "UID":18,
+    "Tests":["Component Limit Tests"]
+    },
+    {"Name":"ILS",
+    "Parent":"Specimen",
+    "UID":19,
+    "Tests":["ILS Testing"]
+    },
+    {"Name":"Matrix Cracking",
+    "Parent":"Specimen",
+    "UID":20
+    },
+    {"Name":"Bolt Holes",
+    "Parent":"Component",
+    "UID":21,
+    "Tests":["Bolted Sub-Component Test","Component Limit Test","Engine Test"]
+    },
+    {"Name":"Stringer",
+    "Parent":"Component",
+    "Tests":["Stringer Component Test","Component Limit Test","Engine Test"],
+    "UID":22
+    },
+    {"Name":"Structural Analysis",
+    "Parent":"Design",
+    "UID":23,
+    "Tests":["Component Limit Test","Engine Test"]}
+    ],
+"Tests":
+    [
+    {"Name":"Bond Pull Tests",
+    "Cost":50,
+    "TestDate":"6/1/2020"
+    },
+    {"Name":"ILS Testing",
+    "Cost":74,
+    "TestDate":"3/1/2021"
+    },
+    {"Name":"Component Limit Test",
+    "Cost":150,
+    "TestDate":"6/15/2021"
+    },
+    {"Name":"Engine Test",
+    "Cost":1500,
+    "TestDate":"11/1/2021"
+    },
+    {"Name":"Bolted Sub-Component Test",
+    "Cost":80,
+    "TestDate":"4/1/2020"
+    },
+    {"Name":"Stringer Component Test",
+    "Cost":90,
+    "TestDate":"5/1/2020"}
+    ]
+}

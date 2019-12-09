@@ -9,11 +9,11 @@ import pandas as pd
 #Files
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Path to read in input
-jsonfile = r"C:\Users\sgtay\Documents\Git\JavaScript\trl\properties2.json"
+jsonfile = r"C:\Users\sgtay\Documents\Git\JavaScript\trlplan\bliskplan.json"
 # Path to write to for file that is used by javascript to create dendograph
-dendographfile = r"C:/Users/sgtay/Documents/Git/JavaScript/trl/test2.csv"
+dendographfile = r"C:/Users/sgtay/Documents/Git/JavaScript/trlplan/test2.csv"
 # Path to write out for file that is used by javascript to create parallel plot
-parallelfile = "connect.csv"
+parallelfile = "continuous.csv"
 
 
 
