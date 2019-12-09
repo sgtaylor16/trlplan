@@ -1,0 +1,24 @@
+Name,Parent,UID
+TRL6,,1
+Design,TRL6,2
+Manufacturing,TRL6,3
+Layup,Manufacturing,4
+Consolidation,Manufacturing,5
+Cure,Manufacturing,6
+Machining,Manufacturing,7
+Inspection,Manufacturing,8
+Bonding,Manufacturing,9
+Surface Prep,Bonding,10
+Delamination,Inspection,11
+Dimensional,Inspection,12
+Bagging,Bonding,13
+Material Properties,Design,14
+Layup Specification,Design,15
+Specimen,Material Properties,16
+Component,Material Properties,17
+Modulus,Specimen,18
+ILS,Specimen,19
+Matrix Cracking,Specimen,20
+Bolt Holes,Component,21
+Stringer,Component,22
+Structural Analysis,Design,23
